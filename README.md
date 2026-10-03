@@ -193,5 +193,10 @@ semantic-cache-main/
   requirements.txt
   .env                 # local secrets (gitignored)
 ```
+## Result 
 
-`.gitignore` excludes `.env`, `.venv/`, `__pycache__/`, `*.faiss`, `*.pkl`, and `.pytest_cache/`.
+<img width="962" height="795" alt="Screenshot 2026-10-03 at 12 34 47 PM" src="https://github.com/user-attachments/assets/5eef3b10-405f-4b53-93f0-a0b1e7f61dbc" />
+<img width="549" height="667" alt="Screenshot 2026-10-03 at 12 35 04 PM" src="https://github.com/user-attachments/assets/f8cb3b5a-eac5-4593-a410-677270870fea" />
+<img width="634" height="703" alt="Screenshot 2026-10-03 at 12 35 20 PM" src="https://github.com/user-attachments/assets/60738c43-45ee-4be6-8843-d75b2b0e293a" />
+
+
