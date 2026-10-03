@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Northline Helpdesk</title>
+  <style>
+    :root {
+      --ink: #1b241c;
+      --muted: #5d6a5e;
+      --paper: #f3efe4;
+      --panel: #fffdf7;
+      --line: #d8d1c2;
+      --cache: #1f7a4d;
+      --cache-bg: #dcefe4;
+      --llm: #9a4b12;
+      --llm-bg: #f8e6d4;
+      --accent: #c45c26;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; }
+    body {
+      font-family: "Avenir Next", "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at 10% 0%, #efe7d6 0, transparent 42%),
+        linear-gradient(180deg, #f7f3ea 0%, var(--paper) 100%);
+      color: var(--ink);
+    }
+
+    .shell {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 28px 20px 40px;
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 20px;
+      min-height: 100%;
+    }
+
+    header {
+      grid-column: 1 / -1;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 16px;
+    }
+
+    .brand { font-size: 13px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); }
+    h1 { margin: 6px 0 0; font-size: 32px; font-weight: 650; letter-spacing: -0.03em; }
+    .lede { margin: 8px 0 0; color: var(--muted); max-width: 62ch; line-height: 1.45; }
+
+    .desk, .rail {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      box-shadow: 0 10px 30px rgba(40, 32, 18, 0.06);
+    }
+
+    .desk {
+      display: flex;
+      flex-direction: column;
+      min-height: 640px;
+    }
+
+    .thread {
+      flex: 1;
+      overflow-y: auto;
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .empty {
+      margin: auto;
+      text-align: center;
+      color: var(--muted);
+      max-width: 36ch;
+      line-height: 1.5;
+    }
+
+    .msg {
+      max-width: 86%;
+      padding: 12px 14px;
+      border-radius: 14px;
+      line-height: 1.5;
+      white-space: pre-wrap;
+    }
+
+    .msg.user {
+      margin-left: auto;
+      background: var(--ink);
+      color: #f6f1e6;
+    }
+
+    .msg.bot {
+      background: #f4efe4;
+      border: 1px solid var(--line);
+    }
+
+    .meta {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+      font-size: 11px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .pill {
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-weight: 650;
+    }
+
+    .pill.cache { background: var(--cache-bg); color: var(--cache); }
+    .pill.llm { background: var(--llm-bg); color: var(--llm); }
+
+    form.composer {
+      display: flex;
+      gap: 10px;
+      padding: 14px;
+      border-top: 1px solid var(--line);
+    }
+
+    textarea {
+      flex: 1;
+      resize: none;
+      min-height: 54px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: #fff;
+      font: inherit;
+      color: var(--ink);
+    }
+
+    button {
+      border: 0;
+      background: var(--accent);
+      color: white;
+      border-radius: 12px;
+      padding: 0 18px;
+      font-weight: 650;
+      cursor: pointer;
+    }
+
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .rail { padding: 18px; height: fit-content; }
+    .rail h2 { margin: 0 0 12px; font-size: 15px; }
+    .stat {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--line);
+      font-size: 14px;
+    }
+    .stat b { font-variant-numeric: tabular-nums; }
+    .hint { margin-top: 14px; color: var(--muted); font-size: 13px; line-height: 1.45; }
+
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+    .chip {
+      background: #efe8d8;
+      border: 1px solid var(--line);
+      color: var(--ink);
+      border-radius: 999px;
+      padding: 7px 11px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    @media (max-width: 860px) {
+      .shell { grid-template-columns: 1fr; }
+      .desk { min-height: 70vh; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header>
+      <div>
+        <div class="brand">Northline University · IT Helpdesk</div>
+        <h1>Ask campus support</h1>
+        <p class="lede">
+          A student helpdesk that uses this project’s semantic cache.
+          Repeat or similar questions are answered from cache instead of calling Groq again.
+        </p>
+      </div>
+    </header>
+
+    <section class="desk">
+      <div class="thread" id="thread">
+        <div class="empty" id="empty">
+          Try “How do I reset my campus Wi‑Fi password?” then ask it again
+          with slightly different wording. The second reply should come from cache.
+        </div>
+      </div>
+      <form class="composer" id="form">
+        <textarea id="input" rows="2" placeholder="Ask a campus IT question…" required></textarea>
+        <button type="submit" id="send">Ask</button>
+      </form>
+    </section>
+
+    <aside class="rail">
+      <h2>Cache this shift</h2>
+      <div class="stat"><span>Questions</span><b id="total">0</b></div>
+      <div class="stat"><span>Cache hits</span><b id="hits">0</b></div>
+      <div class="stat"><span>Groq calls</span><b id="misses">0</b></div>
+      <div class="stat"><span>Hit rate</span><b id="hit_rate">0%</b></div>
+      <div class="stat"><span>Stored answers</span><b id="cached_entries">0</b></div>
+      <p class="hint">A hit means Groq was skipped. That is the cost and latency win this layer is built for.</p>
+      <div class="chips">
+        <button class="chip" type="button" data-q="How do I reset my campus Wi-Fi password?">Wi‑Fi reset</button>
+        <button class="chip" type="button" data-q="What's the process to reset university wifi login?">Similar Wi‑Fi</button>
+        <button class="chip" type="button" data-q="When does the library close on Sundays?">Library hours</button>
+      </div>
+    </aside>
+  </div>
+
+  <script>
+    const thread = document.getElementById("thread");
+    const empty = document.getElementById("empty");
+    const form = document.getElementById("form");
+    const input = document.getElementById("input");
+    const send = document.getElementById("send");
+
+    function addMessage(role, text, meta) {
+      if (empty) empty.remove();
+      const wrap = document.createElement("div");
+      wrap.className = "msg " + role;
+      wrap.textContent = text;
+      if (meta) {
+        const row = document.createElement("div");
+        row.className = "meta";
+        const pill = document.createElement("span");
+        pill.className = "pill " + (meta.source === "cache" ? "cache" : "llm");
+        pill.textContent = meta.source === "cache" ? "Cache hit · $0 tokens" : "Groq · new answer";
+        row.appendChild(pill);
+        const time = document.createElement("span");
+        time.textContent = meta.ms + " ms";
+        row.appendChild(time);
+        wrap.appendChild(row);
+      }
+      thread.appendChild(wrap);
+      thread.scrollTop = thread.scrollHeight;
+    }
+
+    async function refreshStats() {
+      const res = await fetch("/stats");
+      const data = await res.json();
+      document.getElementById("total").textContent = data.total;
+      document.getElementById("hits").textContent = data.hits;
+      document.getElementById("misses").textContent = data.misses;
+      document.getElementById("hit_rate").textContent = Math.round((data.hit_rate || 0) * 100) + "%";
+      document.getElementById("cached_entries").textContent = data.cached_entries;
+    }
+
+    async function ask(text) {
+      addMessage("user", text);
+      send.disabled = true;
+      const started = performance.now();
+      try {
+        const res = await fetch("/query", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text })
+        });
+        const data = await res.json();
+        const ms = Math.round(performance.now() - started);
+        if (!res.ok) {
+          addMessage("bot", data.detail || "The helpdesk could not answer that just now.");
+          return;
+        }
+        addMessage("bot", data.response, { source: data.source, ms });
+        await refreshStats();
+      } catch (err) {
+        addMessage("bot", "Could not reach the API. Is Uvicorn running?");
+      } finally {
+        send.disabled = false;
+        input.focus();
+      }
+    }
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const text = input.value.trim();
+      if (!text) return;
+      input.value = "";
+      ask(text);
+    });
+
+    document.querySelectorAll(".chip").forEach((chip) => {
+      chip.addEventListener("click", () => ask(chip.dataset.q));
+    });
+
+    refreshStats();
+  </script>
+</body>
+</html>
